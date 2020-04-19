@@ -1,9 +1,17 @@
-var express = require('express');
-var router = express.Router();
+const models = require('../models');
+const express = require('express');
+const router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Overthrow price table' });
+router.get('/', function (req, res, next) {
+    models.Item.findAll()
+        .then(items => {
+            console.log(items);
+            res.render('index', {
+                title: 'Overthrow Price Table',
+                items: items
+            });
+        });
 });
 
 module.exports = router;

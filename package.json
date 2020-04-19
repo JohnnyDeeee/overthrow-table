@@ -3,15 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "DEBUG=overthrow-table:* node ./bin/www"
+    "dev": "set DEBUG=overthrow-table:* & nodemon ./bin/www",
+    "migrate:all": "sequelize db:migrate",
+    "migrate:rollback": "sequelize db:migrate:undo:all",
+    "seed:all": "sequelize db:seed:all",
+    "seed:rollback": "sequelize db:seed:undo:all"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "node-sass-middleware": "0.11.0",
+    "sequelize": "^5.21.6",
+    "sequelize-cli": "^5.5.1",
+    "sqlite3": "^4.1.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
