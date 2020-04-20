@@ -39,10 +39,13 @@ router.post('/', async function (req, res, next) {
     // Calculate buy price
     const profitTable = [];
     items.forEach(item => {
+        const buyPrice = getBuyPrice(item.baseprice, buyFromTown.stability, buyFromTown.population, buyFromTown.support, tradeLvl);
+        const sellPrice = getSellPrice(item.baseprice, sellToTown.stability, sellToTown.population, sellToTown.support, tradeLvl);
         profitTable.push({
             itemName: item.name,
-            buyPrice: getBuyPrice(item.baseprice, buyFromTown.stability, buyFromTown.population, buyFromTown.support, tradeLvl),
-            sellPrice: getSellPrice(item.baseprice, sellToTown.stability, sellToTown.population, sellToTown.support, tradeLvl)
+            buyPrice: buyPrice,
+            sellPrice: sellPrice,
+            profitMargin: Math.round(((sellPrice / buyPrice) - 1.0) * 10000) / 100
         });
     });
 
@@ -65,6 +68,7 @@ function getBuyPrice(baseprice, stability, population, standing, tradeLvl) {
     standing = standing < -100 ? -100 : standing; // Min -100
     standing = standing > 100 ? 100 : standing; // Max 100
     standing = standing === 0 ? 1 : standing; // 0 = 1
+    standing = standing / 100;
     let discount = 0;
     if(tradeLvl > 1) {
         discount = 0.02 * (tradeLvl - 1);
