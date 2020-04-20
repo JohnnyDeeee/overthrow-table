@@ -15,25 +15,25 @@
                 <div class="form-group row">
                     <label for="townName" class="col-form-label col-5">Name</label>
                     <div class="col">
-                        <input type="text" class="form-control" id="townName" name="townName">
+                        <input type="text" class="form-control" id="townName" name="name">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="townStability" class="col-form-label col-5">Stability</label>
                     <div class="col-4">
-                        <input type="number" class="form-control" id="townStability" name="townStability">
+                        <input type="number" class="form-control" id="townStability" name="stability">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="townPopulation" class="col-form-label col-5">Population</label>
                     <div class="col-4">
-                        <input type="number" class="form-control" id="townPopulation" name="townPopulation">
+                        <input type="number" class="form-control" id="townPopulation" name="population">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="townSupport" class="col-form-label col-5">Support</label>
                     <div class="col-4">
-                        <input type="number" class="form-control" id="townSupport" name="townSupport">
+                        <input type="number" class="form-control" id="townSupport" name="support">
                     </div>
                 </div>
                 <div class="d-flex justify-content-end">
@@ -77,18 +77,119 @@
     </tbody>
 </table>
 
+<div class="modal fade" id="editTownModal" tabindex="-1" role="dialog" aria-labelledby="editTownModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTownModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editTownForm" action="/towns/edit" method="post">
+                    <div class="form-group row">
+                        <label for="editTownName" class="col-form-label col-5">Name</label>
+                        <div class="col">
+                            <input type="text" class="form-control" id="editTownName" name="townName">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editTownStability" class="col-form-label col-5">Stability</label>
+                        <div class="col-4">
+                            <input type="number" class="form-control" id="editTownStability" name="townStability">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editTownPopulation" class="col-form-label col-5">Population</label>
+                        <div class="col-4">
+                            <input type="number" class="form-control" id="editTownPopulation" name="townPopulation">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editTownSupport" class="col-form-label col-5">Support</label>
+                        <div class="col-4">
+                            <input type="number" class="form-control" id="editTownSupport" name="townSupport">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="editTownForm" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    window.addEventListener('load', () => {
+        document.getElementById("editTownForm").addEventListener('submit', submitEditTownForm);
+    });
+
     function detailFormatter(index, row) {
         let html = [];
 
         console.log(row);
 
         html.push(`\
-        <form action="/towns/delete/${row.id}" method="post">\
-            <button class="btn btn-danger" type="submit">Delete</button>\
-        </form>\
+        <div class="row details">\
+            <form action="/towns/delete/${row.id}" method="post">\
+                <button class="btn btn-danger" type="submit">Delete</button>\
+            </form>\
+            <button class="btn btn-info" type="submit" data-toggle="modal" data-target="#editTownModal" onclick="setSelectedTown(${row.id})">Edit</button>\
+        </div>\
         `);
 
         return html.join('');
+    }
+
+    function setSelectedTown(id) {
+        let request = new XMLHttpRequest();
+        request.open('GET', '/towns/'+id, true);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        request.onreadystatechange = () => {
+            if(request.readyState === XMLHttpRequest.DONE) {
+                const status = request.status;
+                if (status === 0 || (status >= 200 && status < 400)) {
+                    selectedTown = JSON.parse(request.response)[0];
+
+                    document.getElementById("editTownName").value = selectedTown.name;
+                    document.getElementById("editTownStability").value = selectedTown.stability;
+                    document.getElementById("editTownPopulation").value = selectedTown.population;
+                    document.getElementById("editTownSupport").value = selectedTown.support;
+                } else {
+                    console.error("Request failed");
+                }
+            }
+        };
+        request.send();
+    }
+
+    function submitEditTownForm(e) {
+        e.preventDefault();
+        let url = $(this).closest('form').attr('action');
+        const data = {
+            id: selectedTown.id,
+            name: document.getElementById("editTownName").value,
+            stability: document.getElementById("editTownStability").value,
+            population: document.getElementById("editTownPopulation").value,
+            support: document.getElementById("editTownSupport").value
+        };
+
+        let request = new XMLHttpRequest();
+        request.open('POST', url, true);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        request.onreadystatechange = () => {
+            if(request.readyState === XMLHttpRequest.DONE) {
+                const status = request.status;
+                if (status === 0 || (status >= 200 && status < 400)) {
+                    location.reload();
+                } else {
+                    console.error("Request failed");
+                }
+            }
+        };
+        request.send(JSON.stringify(data));
     }
 </script>

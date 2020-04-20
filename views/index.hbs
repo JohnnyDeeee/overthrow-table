@@ -18,8 +18,8 @@
                     <div class="col">
                         <select class="form-control" id="buyFromTown" name="buyFromTown">
                             {{#each towns}}
-                                <option value="{{id}}">{{name}} (stability: {{stability}}, population: {{population}},
-                                    support: {{support}})
+                                <option value="{{id}}">
+                                    {{name}} (stability: {{stability}}, population: {{population}}, support: {{support}})
                                 </option>
                             {{/each}}
                         </select>
@@ -54,8 +54,11 @@
 <div id="townCards" class="row">
     {{#if buyFromTown}}
         <div id="buyFromTownCard" class="card col">
+            <div class="card-header bg-info text-white">
+                <button type="button" class="btn btn-info mdi mdi-pencil float-right align-top" data-toggle="modal" data-target="#editTownModal" onclick="setSelectedTown({{buyFromTown.id}})"></button>
+                <h5>{{buyFromTown.name}}</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">{{buyFromTown.name}}</h5>
                 <div class="card-text">
                     <div class="card-row">
                         Stability: {{buyFromTown.stability}}
@@ -71,10 +74,19 @@
         </div>
     {{/if}}
 
+    {{#if buyFromTown}}
+        {{#if sellToTown}}
+            <button class="btn btn-primary" id="switchButton" onclick="switchButton()">Switch</button>
+        {{/if}}
+    {{/if}}
+
     {{#if sellToTown}}
         <div id="sellToTownCard" class="card col">
+            <div class="card-header bg-info text-white">
+                <button type="button" class="btn btn-info mdi mdi-pencil float-right align-top" data-toggle="modal" data-target="#editTownModal" onclick="setSelectedTown({{sellToTown.id}})"></button>
+                <h5>{{sellToTown.name}}</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">{{sellToTown.name}}</h5>
                 <div class="card-text">
                     <div class="card-row">
                         Stability: {{sellToTown.stability}}
@@ -115,3 +127,118 @@
     {{/each}}
     </tbody>
 </table>
+
+<div class="modal fade" id="editTownModal" tabindex="-1" role="dialog" aria-labelledby="editTownModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTownModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editTownForm" action="/towns/edit" method="post">
+                    <div class="form-group row">
+                        <label for="editTownName" class="col-form-label col-5">Name</label>
+                        <div class="col">
+                            <input type="text" class="form-control" id="editTownName" name="townName">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editTownStability" class="col-form-label col-5">Stability</label>
+                        <div class="col-4">
+                            <input type="number" class="form-control" id="editTownStability" name="townStability">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editTownPopulation" class="col-form-label col-5">Population</label>
+                        <div class="col-4">
+                            <input type="number" class="form-control" id="editTownPopulation" name="townPopulation">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="editTownSupport" class="col-form-label col-5">Support</label>
+                        <div class="col-4">
+                            <input type="number" class="form-control" id="editTownSupport" name="townSupport">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="editTownForm" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedTown = null;
+
+    window.addEventListener('load', () => {
+        document.getElementById("buyFromTown").value = "{{buyFromTown.id}}";
+        document.getElementById("sellToTown").value = "{{sellToTown.id}}";
+
+        document.getElementById("editTownForm").addEventListener('submit', submitEditTownForm);
+    });
+
+    function switchButton() {
+        let buyFromTownID = document.getElementById("buyFromTown").value;
+        let sellToTownID = document.getElementById("sellToTown").value;
+
+        document.getElementById("buyFromTown").value = sellToTownID;
+        document.getElementById("sellToTown").value = buyFromTownID;
+
+        document.getElementById("profitForm").submit();
+    }
+
+    function submitEditTownForm(e) {
+        e.preventDefault();
+        let url = $(this).closest('form').attr('action');
+        const data = {
+            id: selectedTown.id,
+            name: document.getElementById("editTownName").value,
+            stability: document.getElementById("editTownStability").value,
+            population: document.getElementById("editTownPopulation").value,
+            support: document.getElementById("editTownSupport").value
+        };
+
+        let request = new XMLHttpRequest();
+        request.open('POST', url, true);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        request.onreadystatechange = () => {
+            if(request.readyState === XMLHttpRequest.DONE) {
+                const status = request.status;
+                if (status === 0 || (status >= 200 && status < 400)) {
+                    document.getElementById("profitForm").submit();
+                } else {
+                    console.error("Request failed");
+                }
+            }
+        };
+        request.send(JSON.stringify(data));
+    }
+
+    function setSelectedTown(id) {
+        let request = new XMLHttpRequest();
+        request.open('GET', '/towns/'+id, true);
+        request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        request.onreadystatechange = () => {
+            if(request.readyState === XMLHttpRequest.DONE) {
+                const status = request.status;
+                if (status === 0 || (status >= 200 && status < 400)) {
+                    selectedTown = JSON.parse(request.response)[0];
+
+                    document.getElementById("editTownName").value = selectedTown.name;
+                    document.getElementById("editTownStability").value = selectedTown.stability;
+                    document.getElementById("editTownPopulation").value = selectedTown.population;
+                    document.getElementById("editTownSupport").value = selectedTown.support;
+                } else {
+                    console.error("Request failed");
+                }
+            }
+        };
+        request.send();
+    }
+</script>
