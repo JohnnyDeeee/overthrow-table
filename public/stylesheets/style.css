@@ -12,4 +12,10 @@ th {
 .fixed-table-body {
   overflow: unset !important; }
 
+#addTownAccordion {
+  width: 20em; }
+
+#addTownCard {
+  padding: .25em 0; }
+
 /*# sourceMappingURL=style.css.map */
