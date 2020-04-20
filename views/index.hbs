@@ -1,2 +1,117 @@
 <h1>{{title}}</h1>
 <p>Welcome to {{title}}</p>
+
+<div class="accordion" id="profitAccordion">
+    <div class="card">
+        <div class="card-header" id="profitCard">
+            <h2 class="mb-0 text-center">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseForm"
+                        aria-expanded="true" aria-controls="collapseForm">
+                    Generate profit margin
+                </button>
+            </h2>
+        </div>
+        <div id="collapseForm" class="collapse" aria-labelledby="profitCard" data-parent="#profitAccordion">
+            <form id="profitForm" class="card-body" action="/" method="post">
+                <div class="form-group row">
+                    <label for="buyTownName" class="col-form-label col-5">Buy products from town</label>
+                    <div class="col">
+                        <select class="form-control" id="buyFromTown" name="buyFromTown">
+                            {{#each towns}}
+                                <option value="{{id}}">{{name}} (stability: {{stability}}, population: {{population}},
+                                    support: {{support}})
+                                </option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="sellTownName" class="col-form-label col-5">Sell products to town</label>
+                    <div class="col">
+                        <select class="form-control" id="sellToTown" name="sellToTown">
+                            {{#each towns}}
+                                <option value="{{id}}">{{name}} (stability: {{stability}}, population: {{population}},
+                                    support: {{support}})
+                                </option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="tradeLvl" class="col-form-label col-5">Trade level</label>
+                    <div class="col">
+                        <input type="number" class="form-control col-3" id="tradeLvl" name="tradeLvl" min="1" value="1">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Generate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="townCards" class="row">
+    {{#if buyFromTown}}
+        <div id="buyFromTownCard" class="card col">
+            <div class="card-body">
+                <h5 class="card-title">{{buyFromTown.name}}</h5>
+                <div class="card-text">
+                    <div class="card-row">
+                        Stability: {{buyFromTown.stability}}
+                    </div>
+                    <div class="card-row">
+                        Population: {{buyFromTown.population}}
+                    </div>
+                    <div class="card-row">
+                        Support: {{buyFromTown.support}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/if}}
+
+    {{#if sellToTown}}
+        <div id="sellToTownCard" class="card col">
+            <div class="card-body">
+                <h5 class="card-title">{{sellToTown.name}}</h5>
+                <div class="card-text">
+                    <div class="card-row">
+                        Stability: {{sellToTown.stability}}
+                    </div>
+                    <div class="card-row">
+                        Population: {{sellToTown.population}}
+                    </div>
+                    <div class="card-row">
+                        Support: {{sellToTown.support}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/if}}
+</div>
+
+<table data-toggle="table"
+       data-pagination="true"
+       data-search="true"
+       data-page-list="[10,25,50,100,all]"
+       data-pagination-v-align="top"
+       data-show-columns="true"
+       data-show-columns-toggle-all="true">
+    <thead class="thead-light">
+    <tr>
+        <th data-sortable="true">Name</th>
+        <th data-sortable="true">Buy price ({{#if buyFromTown}}{{buyFromTown.name}}{{/if}})</th>
+        <th data-sortable="true">Sell price ({{#if sellToTown}}{{sellToTown.name}}{{/if}})</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each profitTable}}
+        <tr>
+            <td>{{itemName}}</td>
+            <td>{{buyPrice}}</td>
+            <td>{{sellPrice}}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>

@@ -6,7 +6,6 @@ ItemRadio,25,0,0,2
 ItemMap,1,0,1,0
 ToolKit,80,0,0,0
 ACE_Banana,2,0,0.1,0
-ItemWatch,10,0,0,1
 ACE_Altimeter,100,0,0,4
 ACE_UAVBattery,40,0,0,4
 ACE_wirecutter,25,0,5,0
