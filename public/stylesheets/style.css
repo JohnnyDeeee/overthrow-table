@@ -1,8 +1,15 @@
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
 
 a {
-  color: #00B7FF;
-}
+  color: #00B7FF; }
+
+th {
+  position: sticky;
+  top: 0; }
+
+.fixed-table-body {
+  overflow: unset !important; }
+
+/*# sourceMappingURL=style.css.map */

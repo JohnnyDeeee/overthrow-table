@@ -1,9 +1,32 @@
 <h1>{{title}}</h1>
 <p>Welcome to {{title}}</p>
-<div>
-    <ul class="list-group">
-        {{#each items}}
-            <li class="list-group-item">{{name}} | {{baseprice}}</li>
-        {{/each}}
-    </ul>
-</div>
+<table data-toggle="table"
+       data-pagination="true"
+       data-search="true"
+       data-page-list="[10,25,50,100,all]"
+       data-pagination-v-align="top"
+       data-show-columns="true"
+       data-show-columns-toggle-all="true">
+    <thead class="thead-light">
+    <tr>
+        <th data-sortable="true">Name</th>
+        <th data-sortable="true">Baseprice</th>
+        <th data-sortable="true">Wood</th>
+        <th data-sortable="true">Steel</th>
+        <th data-sortable="true">Plastic</th>
+        <th data-sortable="true">Category</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each items}}
+        <tr>
+            <td>{{name}}</td>
+            <td>{{baseprice}}</td>
+            <td>{{wood}}</td>
+            <td>{{steel}}</td>
+            <td>{{plastic}}</td>
+            <td>{{category}}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>

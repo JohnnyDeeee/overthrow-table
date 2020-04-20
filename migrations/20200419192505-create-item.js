@@ -14,6 +14,18 @@ module.exports = {
       baseprice: {
         type: Sequelize.INTEGER
       },
+      wood: {
+        type: Sequelize.INTEGER
+      },
+      steel: {
+        type: Sequelize.INTEGER
+      },
+      plastic: {
+        type: Sequelize.INTEGER
+      },
+      category: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

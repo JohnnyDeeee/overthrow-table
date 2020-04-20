@@ -1,0 +1,16 @@
+name,baseprice,wood,steel,plastic
+G_Combat,18,0,0,3
+G_Lowprofile,9,0,0,2
+G_Tactical_Black,6,0,0,1
+G_Diving,15,0,0,3
+G_B_Diving,18,0,0,3
+G_O_Diving,18,0,0,3
+G_I_Diving,18,0,0,3
+G_Balaclava_combat,45,0,0,8
+G_Balaclava_lowprofile,36,0,0,6
+G_Tactical_Clear,3,0,0,1
+G_Balaclava_TI_G_blk_F,90,0,0,15
+G_Balaclava_TI_G_tna_F,90,0,0,15
+G_Combat_Goggles_tna_F,27,0,0,5
+G_EyeProtectors_F,9,0,0,2
+G_EyeProtectors_Earpiece_F,18,0,0,3
