@@ -1,0 +1,11 @@
+name,baseprice,wood,steel,plastic
+OT_Wood,5,0,0,0
+OT_Lumber,8,0,0,0
+OT_Steel,25,0,0,0
+OT_Plastic,40,0,0,0
+OT_Sugarcane,5,0,0,0
+OT_Grapes,5,0,0,0
+OT_Sugar,15,0,0,0
+OT_Wine,25,0,0,0
+OT_Olives,7,0,0,0
+OT_Fertilizer,20,0,0,0
